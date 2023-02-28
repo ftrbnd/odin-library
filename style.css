@@ -53,6 +53,7 @@ button:active {
 .card {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     
     padding: 8px;
     background-color: brown;
