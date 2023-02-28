@@ -99,3 +99,5 @@ function attachButtonListeners() {
 
 displayBooks();
 attachButtonListeners();
+
+// TODO: Can't add new book if library is empty
