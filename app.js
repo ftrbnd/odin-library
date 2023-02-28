@@ -1,9 +1,13 @@
+const libraryDiv = document.querySelector('div#library');
+const addBookButton = document.querySelector('button#add-book');
+const addBookForm = document.querySelector('form');
+
 class Book {
     constructor(title, author, pages, read) {
         this.title = title;
         this.author = `by ${author}`;
         this.pages = `${pages} pages`;
-        this.read = read ? 'read' : 'not read yet';
+        this.read = read ? 'Read' : 'Not read yet';
     }
 
     info() {
@@ -17,12 +21,11 @@ let myLibrary = [
     new Book('The Invisible Life of Addie LaRue', 'V. E. Schwab', 448, false)
 ];
 
-function addBookToLibrary(book) {
-    myLibrary.push(book);
-}
-
 function displayBooks() {
-    const library = document.querySelector('div#library');
+    while (libraryDiv.firstChild) {
+        libraryDiv.removeChild(libraryDiv.firstChild);
+    }
+
     for (const book of myLibrary) {
         const bookCard = document.createElement('div');
 
@@ -41,8 +44,33 @@ function displayBooks() {
         bookCard.appendChild(read);
         bookCard.classList.add('card');
 
-        library.appendChild(bookCard);
+        libraryDiv.appendChild(bookCard);
     }
 }
 
+function addBookToLibrary(book) {
+    myLibrary.push(book);
+    displayBooks();
+}
+
+function attachButtonListeners() {
+    addBookButton.addEventListener('click', () => {
+        if (addBookForm.style.display == 'flex') {
+            addBookForm.style.display = 'none';
+        } else {
+            addBookForm.style.display = 'flex';
+        }
+    });
+
+    addBookForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const bookData = [...data.entries()];
+
+        const newBook = new Book(bookData[0][1], bookData[1][1], bookData[2][1], bookData[3][1]);
+        addBookToLibrary(newBook);
+    });
+}
+
 displayBooks();
+attachButtonListeners();

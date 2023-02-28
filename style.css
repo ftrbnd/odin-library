@@ -1,22 +1,52 @@
+:root {
+    --brown-border-color: rgb(96, 24, 24);
+}
+
 html, body {
     margin: 0;
     padding: 0;
     background-color: tan;
     color: beige;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
     display: grid;
     grid-template-rows: auto 1fr;
     justify-content: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     padding: 8px;
+}
+
+button {
+    background-color: beige;
+    border: none;
+    border-radius: 15px;
+    padding: 12px;
+    height: min-content;
+    font-weight: bold;
+}
+
+button:hover {
+    background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
+}
+
+button:active {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.4) 0 0);
 }
 
 #library {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+
+    padding: 8px;
 }
 
 .card {
@@ -25,6 +55,38 @@ body {
     
     padding: 8px;
     background-color: brown;
-    border: 4px solid rgb(96, 24, 24);
+    border: 4px solid var(--brown-border-color);
     border-radius: 25px;
+}
+
+form {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px;
+    margin: 8px;
+    background-color: beige;
+    color: brown;
+    border: 2px solid var(--brown-border-color);
+    border-radius: 25px;
+}
+
+input {
+    padding: 4px;
+    border: 1px solid var(--brown-border-color);
+    border-radius: 5px;
+}
+
+button#submit {
+    background-color: brown;
+    color: beige;
+}
+
+div.read-choice {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
 }

@@ -9,7 +9,40 @@
     <script src="app.js" defer></script>
 </head>
 <body>
-    <h1>My Library</h1>
+    <div class="header">
+        <h1>My Library</h1>
+        <button id="add-book">+ NEW BOOK</button>
+    </div>
+    <form hidden>
+        <h1>Add new book</h1>
+
+        <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="book_title" placeholder="Almond" required/>
+        </div>
+        <div>
+            <label for="author">Author</label>
+            <input type="text" id="author" name="book_author" placeholder="Sohn Won-pyung" required/>
+        </div>
+        <div>
+            <label for="pages">Pages</label>
+            <input type="number" id="pages" name="book_pages" min="1" placeholder="272" required/>
+        </div>
+
+        <div class="read-choice">
+            <h4>Have you read this book?</h4>
+            <div>
+                <input type="radio" id="read-true" name="book_read" value="true" required>
+                <label for="read-true">Yes</label>
+            </div>
+            <div>
+                <input type="radio" id="read-false" name="book_read" value="false" required>
+                <label for="read-false">No</label>
+            </div>
+        </div>
+
+        <button id="submit" type="submit">Submit</button>
+    </form>
     <div id="library"></div>
 </body>
 </html>
