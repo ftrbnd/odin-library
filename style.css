@@ -93,6 +93,14 @@ form#new-book {
     border-radius: 25px;
 }
 
+div.inputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 8px;
+}
+
 input {
     padding: 4px;
     border: 1px solid var(--brown-border-color);
