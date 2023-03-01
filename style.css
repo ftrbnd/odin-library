@@ -36,6 +36,7 @@ button {
 }
 
 button:hover {
+    cursor: pointer;
     background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
 }
 
