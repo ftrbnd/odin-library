@@ -1,7 +1,3 @@
-const libraryDiv = document.querySelector('div#library');
-const addBookButton = document.querySelector('button#add-book');
-const addBookForm = document.querySelector('form#new-book');
-
 class Book {
     constructor(title, author, pages, read) {
         this.title = title;
@@ -22,6 +18,8 @@ let myLibrary = [
 ];
 
 function displayBooks() {
+    const libraryDiv = document.querySelector('div#library');
+
     while (libraryDiv.firstChild) {
         libraryDiv.removeChild(libraryDiv.firstChild);
     }
@@ -57,6 +55,8 @@ function displayBooks() {
 
         libraryDiv.appendChild(bookCard);
     }
+
+    attachButtonListeners();
 }
 
 function addBookToLibrary(book) {
@@ -67,15 +67,29 @@ function addBookToLibrary(book) {
 function removeBookFromLibrary(bookId) {
     myLibrary.splice(bookId, 1);
     displayBooks();
-    attachButtonListeners();
 }
 
 function attachButtonListeners() {
+    const removeBookButtons = document.querySelectorAll('.remove');
+    for (const btn of removeBookButtons) {
+        btn.addEventListener('click', () => {
+            console.log(`Removing book id #${btn.id}`);
+            removeBookFromLibrary(btn.id);
+        });
+    }
+}
+
+function attachNewBookFormAndButtonListeners() {
+    const addBookForm = document.querySelector('form#new-book');
+    const addBookButton = document.querySelector('button#add-book');
+
     addBookButton.addEventListener('click', () => {
-        if (addBookForm.style.display == 'flex') {
-            addBookForm.style.display = 'none';
-        } else {
+        console.log('addBookButton click');
+        if (!addBookForm.style.display) {
             addBookForm.style.display = 'flex';
+        } else {
+            addBookForm.removeAttribute('style');
+            // addBookForm.style.display = 'none';
         }
     });
 
@@ -86,18 +100,11 @@ function attachButtonListeners() {
 
         const newBook = new Book(bookData[0][1], bookData[1][1], bookData[2][1], bookData[3][1]);
         addBookToLibrary(newBook);
-    });
 
-    const removeBookButtons = document.querySelectorAll('.remove');
-    for (const btn of removeBookButtons) {
-        btn.addEventListener('click', () => {
-            console.log(`Removing book id #${btn.id}`);
-            removeBookFromLibrary(btn.id);
-        });
-    }
+        addBookForm.reset();
+        addBookForm.removeAttribute('style');
+    });
 }
 
 displayBooks();
-attachButtonListeners();
-
-// TODO: Can't add new book if library is empty
+attachNewBookFormAndButtonListeners();
