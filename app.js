@@ -39,14 +39,23 @@ function displayBooks() {
         pages.innerHTML = book.pages;
         const read = document.createElement('p');
         read.innerHTML = book.read;
+
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.classList.add('card-buttons');
+        const toggleReadButton = document.createElement('button');
+        toggleReadButton.classList.add('toggle-read');
+        toggleReadButton.style.background = "url('assets/read.svg')";
+        toggleReadButton.setAttribute('id', `${myLibrary.indexOf(book)}`);
         const removeButton = document.createElement('button');
         removeButton.classList.add('remove');
         removeButton.style.background = "url('assets/trash-can-outline.svg')";
         removeButton.setAttribute('id', `${myLibrary.indexOf(book)}`);
+        buttonsDiv.appendChild(toggleReadButton);
+        buttonsDiv.appendChild(removeButton);
 
         bottomRow.appendChild(pages);
         bottomRow.appendChild(read);
-        bottomRow.appendChild(removeButton);
+        bottomRow.appendChild(buttonsDiv);
 
         bookCard.appendChild(title);
         bookCard.appendChild(author)
@@ -59,16 +68,6 @@ function displayBooks() {
     attachButtonListeners();
 }
 
-function addBookToLibrary(book) {
-    myLibrary.push(book);
-    displayBooks();
-}
-
-function removeBookFromLibrary(bookId) {
-    myLibrary.splice(bookId, 1);
-    displayBooks();
-}
-
 function attachButtonListeners() {
     const removeBookButtons = document.querySelectorAll('.remove');
     for (const btn of removeBookButtons) {
@@ -77,6 +76,28 @@ function attachButtonListeners() {
             removeBookFromLibrary(btn.id);
         });
     }
+
+    const toggleButtons = document.querySelectorAll('.toggle-read');
+    for (const btn of toggleButtons) {
+        btn.addEventListener('click', () => {
+            console.log(`Toggling read status of book id #${btn.id}`);
+            const newStatus = toggleReadStatus(btn.id);
+            
+            const statusText = btn.parentNode.parentNode.firstChild.nextSibling;
+            statusText.textContent = newStatus;
+        });
+    }
+}
+
+function removeBookFromLibrary(bookId) {
+    myLibrary.splice(bookId, 1);
+    displayBooks();
+}
+
+function toggleReadStatus(bookId) {
+    const currentStatus = myLibrary[bookId].read;
+    myLibrary[bookId].read = currentStatus == 'Read' ? 'Not read yet' : 'Read';
+    return myLibrary[bookId].read;
 }
 
 function attachNewBookFormAndButtonListeners() {
@@ -89,7 +110,6 @@ function attachNewBookFormAndButtonListeners() {
             addBookForm.style.display = 'flex';
         } else {
             addBookForm.removeAttribute('style');
-            // addBookForm.style.display = 'none';
         }
     });
 
@@ -104,6 +124,11 @@ function attachNewBookFormAndButtonListeners() {
         addBookForm.reset();
         addBookForm.removeAttribute('style');
     });
+}
+
+function addBookToLibrary(book) {
+    myLibrary.push(book);
+    displayBooks();
 }
 
 displayBooks();
