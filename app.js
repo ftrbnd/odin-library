@@ -1,6 +1,6 @@
 const libraryDiv = document.querySelector('div#library');
 const addBookButton = document.querySelector('button#add-book');
-const addBookForm = document.querySelector('form');
+const addBookForm = document.querySelector('form#new-book');
 
 class Book {
     constructor(title, author, pages, read) {
