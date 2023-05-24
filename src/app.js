@@ -1,15 +1,4 @@
-class Book {
-    constructor(title, author, pages, read) {
-        this.title = title;
-        this.author = `by ${author}`;
-        this.pages = `${pages} pages`;
-        this.read = read ? 'Read' : 'Not read yet';
-    }
-
-    info() {
-        return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read}`;
-    }
-}
+import Book from "./Book";
 
 let myLibrary = [
     new Book('The Perks of Being a Wallflower', 'Stephen Chbosky', 256, true),
