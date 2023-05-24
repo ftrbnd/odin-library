@@ -1,11 +1,5 @@
 import Book from "./Book";
 
-let myLibrary = [
-    new Book('The Perks of Being a Wallflower', 'Stephen Chbosky', 256, true),
-    new Book('Almond', 'Sohn Won-pyung', 272, true),
-    new Book('The Invisible Life of Addie LaRue', 'V. E. Schwab', 448, false)
-];
-
 function displayBooks() {
     const libraryDiv = document.querySelector('div#library');
 
