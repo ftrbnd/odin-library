@@ -38,19 +38,24 @@ async function saveBook(book) {
   }
 }
 
-// Loads books and listens for upcoming ones.
 function loadBooks() {
-  // Create the query to load the last 12 books and listen for new ones.
   const recentBooksQuery = query(collection(getFirestore(), 'books'), orderBy('author'), limit(12));
   
-  // Start listening to the query.
   onSnapshot(recentBooksQuery, function(snapshot) {
     snapshot.docChanges().forEach(function(change) {
       if (change.type === 'removed') {
         console.log(`${change.doc.id} was removed`);
       } else {
         const bookData = change.doc.data();
-        displayBook({...bookData, id: change.doc.id})
+        const book = new Book(
+          bookData.title,
+          bookData.author,
+          bookData.pages,
+          bookData.read,
+          change.doc.id
+        );
+
+        displayBook(book);
         console.log(`${change.doc.id} was displayed`);
       }
     });
@@ -58,53 +63,73 @@ function loadBooks() {
 }
 
 function displayBook(book) {
-    const libraryDiv = document.querySelector('div#library');
+  const libraryDiv = document.querySelector('div#library');
 
-    const bookCard = document.createElement('div');
+  const bookCard = document.createElement('div');
+  bookCard.setAttribute('id', `${book.id}`);
 
-    const title = document.createElement('h1');
-    title.textContent = book.title;
-    const author = document.createElement('h2');
-    author.textContent = book.author;
+  const title = document.createElement('h1');
+  title.textContent = book.title;
+  const author = document.createElement('h2');
+  author.textContent = book.author;
 
-    const bottomRow = document.createElement('div');
-    bottomRow.classList.add('card-footer');
+  const bottomRow = document.createElement('div');
+  bottomRow.classList.add('card-footer');
 
-    const pages = document.createElement('p');
-    pages.innerHTML = book.pages;
-    const read = document.createElement('p');
-    read.innerHTML = book.read;
+  const pages = document.createElement('p');
+  pages.innerHTML = book.pages;
+  const read = document.createElement('p');
+  read.innerHTML = book.read;
 
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.classList.add('card-buttons');
-    const toggleReadButton = document.createElement('button');
-    toggleReadButton.classList.add('toggle-read');
-    toggleReadButton.style.background = "url('../assets/read.svg')";
-    toggleReadButton.setAttribute('id', `${book.id}`);
-    const removeButton = document.createElement('button');
-    removeButton.classList.add('remove');
-    removeButton.style.background = "url('../assets/trash-can-outline.svg')";
-    removeButton.setAttribute('id', `${book.id}`);
-    buttonsDiv.appendChild(toggleReadButton);
-    buttonsDiv.appendChild(removeButton);
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.classList.add('card-buttons');
+  const toggleReadButton = document.createElement('button');
+  toggleReadButton.classList.add('toggle-read');
+  toggleReadButton.style.background = "url('../assets/read.svg')";
+  toggleReadButton.setAttribute('id', `${book.id}`);
+  toggleReadButton.addEventListener('click', () => {
+      console.log(`Toggling read status of book id #${book.id}`);
+      const newStatus = toggleReadStatus(book);
+      
+      const statusText = toggleReadButton.parentNode.parentNode.firstChild.nextSibling;
+      statusText.textContent = newStatus;
+  });
 
-    bottomRow.appendChild(pages);
-    bottomRow.appendChild(read);
-    bottomRow.appendChild(buttonsDiv);
+  const removeButton = document.createElement('button');
+  removeButton.classList.add('remove');
+  removeButton.style.background = "url('../assets/trash-can-outline.svg')";
+  removeButton.setAttribute('id', `${book.id}`);
+  removeButton.addEventListener('click', () => {
+    console.log(`Removing book id #${book.id}`);
+    deleteBook(book.id);
+  });
 
-    bookCard.appendChild(title);
-    bookCard.appendChild(author)
-    bookCard.appendChild(bottomRow);
-    bookCard.classList.add('card');
+  buttonsDiv.appendChild(toggleReadButton);
+  buttonsDiv.appendChild(removeButton);
 
-    libraryDiv.appendChild(bookCard);
+  bottomRow.appendChild(pages);
+  bottomRow.appendChild(read);
+  bottomRow.appendChild(buttonsDiv);
 
-    // attachButtonListener();
+  bookCard.appendChild(title);
+  bookCard.appendChild(author)
+  bookCard.appendChild(bottomRow);
+  bookCard.classList.add('card');
+
+  libraryDiv.appendChild(bookCard);
+
+  // attachButtonListener();
+}
+
+function toggleReadStatus(bookId) {
+  // get book from db
+  // toggle read status in db
+  // return new read status
 }
 
 // Delete a Book from the UI.
-function deleteBook(id) {
-  let div = document.getElementById(id);
+function deleteBook(bookId) {
+  let div = document.getElementById(bookId);
   // If an element for that message exists we delete it.
   if (div) {
     div.parentNode.removeChild(div);
