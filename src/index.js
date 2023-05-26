@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, limit, onSnapshot, orderBy, query, runTransaction } from "firebase/firestore";
+import { addDoc, collection, getFirestore, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import Book from "./Book";
 import { deleteBook, displayBook } from "./user-interface";
 
@@ -14,9 +13,7 @@ const firebaseConfig = {
   measurementId: "G-22GZ2HPKCM"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 function loadBooks() {
   const recentBooksQuery = query(collection(getFirestore(), 'books'), orderBy('author'), limit(12));
