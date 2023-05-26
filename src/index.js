@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import  { collection, getFirestore, limit, onSnapshot, orderBy, query } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDoc, getFirestore, limit, onSnapshot, orderBy, query, runTransaction } from "firebase/firestore";
 import Book from "./Book";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -44,7 +44,7 @@ function loadBooks() {
   onSnapshot(recentBooksQuery, function(snapshot) {
     snapshot.docChanges().forEach(function(change) {
       if (change.type === 'removed') {
-        console.log(`${change.doc.id} was removed`);
+        deleteBook(change.doc.id)
       } else {
         const bookData = change.doc.data();
         const book = new Book(
@@ -63,6 +63,9 @@ function loadBooks() {
 }
 
 function displayBook(book) {
+  const div = document.getElementById(book.id);
+  if (div) div.parentNode.removeChild(div);
+
   const libraryDiv = document.querySelector('div#library');
 
   const bookCard = document.createElement('div');
@@ -88,11 +91,8 @@ function displayBook(book) {
   toggleReadButton.style.background = "url('../assets/read.svg')";
   toggleReadButton.setAttribute('id', `${book.id}`);
   toggleReadButton.addEventListener('click', () => {
-      console.log(`Toggling read status of book id #${book.id}`);
-      const newStatus = toggleReadStatus(book);
-      
-      const statusText = toggleReadButton.parentNode.parentNode.firstChild.nextSibling;
-      statusText.textContent = newStatus;
+    toggleReadStatus(book.id);
+    console.log(`Toggling read status of book id #${book.id}`);
   });
 
   const removeButton = document.createElement('button');
@@ -100,8 +100,8 @@ function displayBook(book) {
   removeButton.style.background = "url('../assets/trash-can-outline.svg')";
   removeButton.setAttribute('id', `${book.id}`);
   removeButton.addEventListener('click', () => {
-    console.log(`Removing book id #${book.id}`);
-    deleteBook(book.id);
+    deleteDoc(doc(getFirestore(), 'books', book.id))
+    console.log(`Removed book id #${book.id} from Firestore`);
   });
 
   buttonsDiv.appendChild(toggleReadButton);
@@ -117,22 +117,31 @@ function displayBook(book) {
   bookCard.classList.add('card');
 
   libraryDiv.appendChild(bookCard);
-
-  // attachButtonListener();
 }
 
-function toggleReadStatus(bookId) {
-  // get book from db
-  // toggle read status in db
-  // return new read status
+async function toggleReadStatus(bookId) {
+  const bookRef = doc(getFirestore(), 'books', bookId);
+
+  try {
+    await runTransaction(getFirestore(), async (transaction) => {
+      const bookDoc = await transaction.get(bookRef);
+      if (!bookDoc.exists()) throw 'Document does not exist!';
+
+      const newReadStatus = !bookDoc.data().read;
+      transaction.update(bookRef, { read: newReadStatus });
+    });
+    console.log('Transaction successfully committed!');
+  } catch (e) {
+    console.log('Transaction failed: ', e);
+  }
 }
 
-// Delete a Book from the UI.
+// Delete a Book from the UI
 function deleteBook(bookId) {
-  let div = document.getElementById(bookId);
-  // If an element for that message exists we delete it.
+  const div = document.getElementById(bookId);
   if (div) {
     div.parentNode.removeChild(div);
+    console.log(`${change.doc.id} was removed from the UI`);
   }
 }
 
