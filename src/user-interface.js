@@ -12,13 +12,13 @@ export function displayBook(book) {
   const title = document.createElement('h1');
   title.textContent = book.title;
   const author = document.createElement('h2');
-  author.textContent = book.author;
+  author.textContent = `by ${book.author}`;
 
   const bottomRow = document.createElement('div');
   bottomRow.classList.add('card-footer');
 
   const pages = document.createElement('p');
-  pages.innerHTML = book.pages;
+  pages.innerHTML = `${book.pages} pages`;
   const read = document.createElement('p');
   read.innerHTML = book.read;
 
